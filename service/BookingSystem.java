@@ -155,59 +155,130 @@ public class BookingSystem{
         System.out.println("Flight added!");
         // System.out.println("flight added to text file"); // Save flight 
     }
-
     private void bookTicket() {
-        System.out.print("Enter name: ");
-        String name = sc.nextLine();
         System.out.print("From city: ");
-        String from = sc.nextLine();
+        String from = sc.nextLine().trim();
         System.out.print("To city: ");
-        String to = sc.nextLine();
+        String to = sc.nextLine().trim();
 
         List<Flight> allFlights = graph.getFlightsFrom(from);
         List<Flight> matchingFlights = new ArrayList<>();
 
-        // Filter only those that match the destination
         for (Flight flight : allFlights) {
             if (flight.destination.equalsIgnoreCase(to)) {
                 matchingFlights.add(flight);
             }
         }
 
-        // If no matching flights found
         if (matchingFlights.isEmpty()) {
             System.out.println("No flights available between " + from + " and " + to);
             return;
         }
 
-        // Show available flights
+        System.out.println("\nAvailable Flights:");
         for (int i = 0; i < matchingFlights.size(); i++) {
             System.out.println(i + ": " + matchingFlights.get(i));
         }
 
-        System.out.print("Select flight index: ");
+        System.out.print("\nSelect flight index: ");
         int index = sc.nextInt();
-        sc.nextLine(); // Clear newline buffer
+        sc.nextLine(); // Clear newline
 
         if (index < 0 || index >= matchingFlights.size()) {
             System.out.println("Invalid flight selection.");
             return;
         }
 
+        Flight selected = matchingFlights.get(index);
+
         System.out.print("Seats to book: ");
         int seats = sc.nextInt();
-        sc.nextLine(); // Clear newline buffer
+        sc.nextLine(); // Clear newline
 
-        Flight selected = matchingFlights.get(index);
-        if (selected.availableSeats >= seats) {
-            selected.availableSeats -= seats;
-            Passenger p = new Passenger(currentUser.passengerId, name, from, to, selected.destination, seats);
-            fileManager.savePassenger(p);
-            System.out.println("Booking successful!");
-        } else {
-            System.out.println("Not enough seats available.");
+        if (seats <= 0) {
+            System.out.println("Seat count must be positive.");
+            return;
         }
+
+        if (selected.availableSeats < seats) {
+            System.out.println("Not enough seats available. Only " + selected.availableSeats + " left.");
+            return;
+        }
+
+        List<Passenger> passengersToSave = new ArrayList<>();
+
+        for (int i = 0; i < seats; i++) {
+            System.out.print("Enter name for passenger " + (i + 1) + ": ");
+            String name = sc.nextLine().trim();
+
+            Passenger p = new Passenger(currentUser.passengerId, name, from, to, selected.destination, 1);
+            passengersToSave.add(p);
+        }
+
+        // Save all passengers
+        for (Passenger p : passengersToSave) {
+            fileManager.savePassenger(p);
+        }
+
+        // Deduct booked seats
+        selected.availableSeats -= seats;
+
+        System.out.println("Booking successful for " + seats + " seat(s).");
     }
+
+
+    // private void bookTicket() {
+    //     System.out.print("Enter name: ");
+    //     String name = sc.nextLine();
+    //     System.out.print("From city: ");
+    //     String from = sc.nextLine();
+    //     System.out.print("To city: ");
+    //     String to = sc.nextLine();
+
+    //     List<Flight> allFlights = graph.getFlightsFrom(from);
+    //     List<Flight> matchingFlights = new ArrayList<>();
+
+    //     // Filter only those that match the destination
+    //     for (Flight flight : allFlights) {
+    //         if (flight.destination.equalsIgnoreCase(to)) {
+    //             matchingFlights.add(flight);
+    //         }
+    //     }
+
+    //     // If no matching flights found
+    //     if (matchingFlights.isEmpty()) {
+    //         System.out.println("No flights available between " + from + " and " + to);
+    //         return;
+    //     }
+
+    //     // Show available flights
+    //     for (int i = 0; i < matchingFlights.size(); i++) {
+    //         System.out.println(i + ": " + matchingFlights.get(i));
+    //     }
+
+    //     System.out.print("Select flight index: ");
+    //     int index = sc.nextInt();
+    //     sc.nextLine(); // Clear newline buffer
+
+    //     if (index < 0 || index >= matchingFlights.size()) {
+    //         System.out.println("Invalid flight selection.");
+    //         return;
+    //     }
+
+    //     System.out.print("Seats to book: ");
+    //     int seats = sc.nextInt();
+    //     sc.nextLine(); // Clear newline buffer
+
+    //     Flight selected = matchingFlights.get(index);
+    //     if (selected.availableSeats >= seats) {
+    //         selected.availableSeats -= seats;
+    //         Passenger p = new Passenger(currentUser.passengerId, name, from, to, selected.destination, seats);
+    //         fileManager.savePassenger(p);
+    //         System.out.println("Booking successful!");
+    //     } else {
+    //         System.out.println("Not enough seats available.");
+    //     }
+    // }
 
 
     private void cancelTicket() {

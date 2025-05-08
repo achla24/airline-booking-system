@@ -5,3 +5,5 @@ PassengerID: 4967 | Name: anjali | From: delhi | To: mumbai | Flight: mumbai | S
 PassengerID: 4967 | Name: sachin | From: delhi | To: mumbai | Flight: mumbai | Seats: 2
 PassengerID: 4967 | Name: achla | From: delhi | To: mumbai | Flight: mumbai | Seats: 1
 PassengerID: 4967 | Name: ansh | From: delhi | To: mumbai | Flight: mumbai | Seats: 1
+PassengerID: 4967 | Name: anishka | From: delhi | To: mumbai | Flight: mumbai | Seats: 1
+PassengerID: 4968 | Name: sanjit | From: delhi | To: mumbai | Flight: mumbai | Seats: 1

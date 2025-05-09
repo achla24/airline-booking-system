@@ -121,7 +121,7 @@ public class BookingSystem{
                     case 2 -> cancelTicket();
                     case 3 -> showFlights();
                     case 4 -> findShortestRoute();
-                    case 5 -> showFlightsSortedByDuration();
+                    case 5 -> showSortedFlightsAndMaybeBook();
                     case 6 -> {
                             currentUser = null;
                             System.out.println("Logging out...");
@@ -269,87 +269,13 @@ public class BookingSystem{
         System.out.println("Booking successful for " + seats + " passenger(s).");
     }
 
-
-    // private void bookTicket() {
-    //     System.out.print("Enter name: ");
-    //     String name = sc.nextLine();
-    //     System.out.print("From city: ");
-    //     String from = sc.nextLine();
-    //     System.out.print("To city: ");
-    //     String to = sc.nextLine();
-
-    //     List<Flight> allFlights = graph.getFlightsFrom(from);
-    //     List<Flight> matchingFlights = new ArrayList<>();
-
-    //     // Filter only those that match the destination
-    //     for (Flight flight : allFlights) {
-    //         if (flight.destination.equalsIgnoreCase(to)) {
-    //             matchingFlights.add(flight);
-    //         }
-    //     }
-
-    //     // If no matching flights found
-    //     if (matchingFlights.isEmpty()) {
-    //         System.out.println("No flights available between " + from + " and " + to);
-    //         return;
-    //     }
-
-    //     // Show available flights
-    //     for (int i = 0; i < matchingFlights.size(); i++) {
-    //         System.out.println(i + ": " + matchingFlights.get(i));
-    //     }
-
-    //     System.out.print("Select flight index: ");
-    //     int index = sc.nextInt();
-    //     sc.nextLine(); // Clear newline buffer
-
-    //     if (index < 0 || index >= matchingFlights.size()) {
-    //         System.out.println("Invalid flight selection.");
-    //         return;
-    //     }
-
-    //     System.out.print("Seats to book: ");
-    //     int seats = sc.nextInt();
-    //     sc.nextLine(); // Clear newline buffer
-
-    //     Flight selected = matchingFlights.get(index);
-    //     if (selected.availableSeats >= seats) {
-    //         selected.availableSeats -= seats;
-    //         Passenger p = new Passenger(currentUser.passengerId, name, from, to, selected.destination, seats);
-    //         fileManager.savePassenger(p);
-    //         System.out.println("Booking successful!");
-    //     } else {
-    //         System.out.println("Not enough seats available.");
-    //     }
-    // }
-
-
     private void cancelTicket() {
         System.out.print("Enter Passenger ID to cancel: ");
         int id = sc.nextInt();
         fileManager.cancelPassenger(id);
     }
 
-    // private void showFlights() {
-    //     System.out.print("Enter city: ");
-    //     String city = sc.nextLine().trim().toLowerCase(); // Normalize input
-    //     if (city.isEmpty()) {
-    //         System.out.println("City name cannot be empty.");
-    //         return;
-    //     }
-
-    //     List<Flight> flights = graph.getFlightsFrom(city);
-    //     if (flights.isEmpty()) {
-    //         System.out.println("No flights found from " + city + ".");
-    //     } else {
-    //         System.out.println("Flights from " + city + ":");
-    //         for (Flight flight : flights) {
-    //             System.out.println(flight);
-    //         }
-    //     }
-    // }
-
-   private void showFlights() {
+    private void showFlights() {
         System.out.print("Enter source city: ");
         String source = sc.nextLine().trim().toLowerCase();
 
@@ -411,16 +337,57 @@ public class BookingSystem{
         // System.out.println("Total Duration: " + path.totalDuration + " mins");
     }
 
-    private void showFlightsSortedByDuration() {
+    // private void showFlightsSortedByDuration() {
+    //     System.out.print("Enter source city: ");
+    //     String source = sc.nextLine().trim();
+    //     System.out.print("Enter destination city: ");
+    //     String destination = sc.nextLine().trim();
+
+    //     List<Flight> flightsFromSource = graph.getFlightsFrom(source);
+
+    //     // Filter flights that go to the desired destination
+    //     List<Flight> matchingFlights = new ArrayList<>();
+    //     for (Flight flight : flightsFromSource) {
+    //         if (flight.destination.equalsIgnoreCase(destination)) {
+    //             matchingFlights.add(flight);
+    //         }
+    //     }
+
+    //     if (matchingFlights.isEmpty()) {
+    //         System.out.println("No flights found from " + source + " to " + destination + ".");
+    //         return;
+    //     }
+
+    //     // Sort by duration
+    //     matchingFlights.sort(Comparator.comparingInt(f -> f.duration));
+
+    //     // Print
+    //     System.out.println("\nFlights from " + source + " to " + destination + " sorted by duration:");
+    //     for (Flight flight : matchingFlights) {
+    //         System.out.println("FlightID: " + flight.id +
+    //                         " | Duration: " + flight.duration + " mins" +
+    //                         " | Price: " + flight.price +
+    //                         " | Seats: " + flight.availableSeats);
+    //     }
+    // }
+
+    private void showSortedFlightsAndMaybeBook() {
+        System.out.println("Sort flights by:");
+        System.out.println("1. Duration");
+        System.out.println("2. Price");
+        System.out.println("3. Available Seats");
+        System.out.print("Enter your choice (1-3): ");
+        int sortChoice = sc.nextInt();
+        sc.nextLine(); // Clear newline
+
         System.out.print("Enter source city: ");
         String source = sc.nextLine().trim();
         System.out.print("Enter destination city: ");
         String destination = sc.nextLine().trim();
 
         List<Flight> flightsFromSource = graph.getFlightsFrom(source);
-
-        // Filter flights that go to the desired destination
         List<Flight> matchingFlights = new ArrayList<>();
+
         for (Flight flight : flightsFromSource) {
             if (flight.destination.equalsIgnoreCase(destination)) {
                 matchingFlights.add(flight);
@@ -432,18 +399,38 @@ public class BookingSystem{
             return;
         }
 
-        // Sort by duration
-        matchingFlights.sort(Comparator.comparingInt(f -> f.duration));
+        // Sorting logic
+        switch (sortChoice) {
+            case 1 -> matchingFlights.sort(Comparator.comparingInt(f -> f.duration));
+            case 2 -> matchingFlights.sort(Comparator.comparingInt(f -> f.price));
+            case 3 -> matchingFlights.sort(Comparator.comparingInt(f -> f.availableSeats));
+            default -> {
+                System.out.println("Invalid sort choice.");
+                return;
+            }
+        }
 
-        // Print
-        System.out.println("\nFlights from " + source + " to " + destination + " sorted by duration:");
-        for (Flight flight : matchingFlights) {
-            System.out.println("FlightID: " + flight.id +
-                            " | Duration: " + flight.duration + " mins" +
-                            " | Price: " + flight.price +
-                            " | Seats: " + flight.availableSeats);
+        // Display sorted flights
+        System.out.println("\nFlights from " + source + " to " + destination + ":");
+        for (int i = 0; i < matchingFlights.size(); i++) {
+            Flight f = matchingFlights.get(i);
+            System.out.println(i + ". FlightID: " + f.id +
+                    " | Duration: " + f.duration + " mins" +
+                    " | Price: " + f.price +
+                    " | Seats: " + f.availableSeats);
+        }
+
+        // Ask for booking
+        System.out.print("\nDo you want to book from these flights? (yes/no): ");
+        String answer = sc.nextLine().trim().toLowerCase();
+
+        if (answer.equals("yes")) {
+            bookTicket(source, destination, matchingFlights);  // uses your overloaded bookTicket method
+        } else {
+            System.out.println("Returning to main menu...");
         }
     }
+
 
     private void loadFlightsFromFile() {
         List<Flight.FlightWithSource> flights = fileManager.loadAllFlights();

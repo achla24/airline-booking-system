@@ -1,9 +1,0 @@
-PassengerID: 4967 | Name: ansh1 | From: delhi | To: mumbai | Flight: mumbai | Seats: 12
-PassengerID: 4967 | Name: achlaT | From: delhi | To: goa | Flight: goa | Seats: 1
-PassengerID: 6056 | Name: achlaT | From: delhi | To: mumbai | Flight: mumbai | Seats: 3
-PassengerID: 4967 | Name: anjali | From: delhi | To: mumbai | Flight: mumbai | Seats: 10
-PassengerID: 4967 | Name: sachin | From: delhi | To: mumbai | Flight: mumbai | Seats: 2
-PassengerID: 4967 | Name: achla | From: delhi | To: mumbai | Flight: mumbai | Seats: 1
-PassengerID: 4967 | Name: ansh | From: delhi | To: mumbai | Flight: mumbai | Seats: 1
-PassengerID: 4967 | Name: anishka | From: delhi | To: mumbai | Flight: mumbai | Seats: 1
-PassengerID: 4968 | Name: sanjit | From: delhi | To: mumbai | Flight: mumbai | Seats: 1
